@@ -31,5 +31,12 @@ onMounted(() => {
   gap: 20px;
   align-items: flex-start;
   margin-top: 30px;
+
+  @media (max-width: 1180px) {
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    margin-top: 0;
+  }
 }
 </style>

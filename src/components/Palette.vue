@@ -64,6 +64,19 @@ const activeColorClass = (color) => {
 .palette {
   max-width: 240px;
 
+  @media (max-width: 1180px) {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 10px;
+    max-width: inherit;
+  }
+
+  @media (max-width: 460px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
   &__buttons {
     display: flex;
     flex-direction: column;
@@ -82,6 +95,14 @@ const activeColorClass = (color) => {
     display: flex;
     flex-wrap: wrap;
     gap: 5px;
+
+    @media (max-width: 1180px) {
+      max-width: 250px;
+    }
+
+    @media (max-width: 580px) {
+      flex-flow: wrap-reverse;
+    }
   }
 
   &__color {

@@ -60,11 +60,21 @@ const saveDrawing = () => {
   display: flex;
   flex-direction: column;
 
+  @media (max-width: 1180px) {
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 5px;
+  }
+
   &__buttons {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-end;
     gap: 10px;
+
+    @media (max-width: 1180px) {
+      flex-direction: column;
+    }
 
     button {
       width: 100%;
