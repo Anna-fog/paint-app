@@ -15,7 +15,12 @@
 }
 
 #app {
-  width: 100vw;
+  width: auto;
   height: 100vh;
   margin: 0 auto;
+  overflow: hidden;
+}
+
+#app, body {
+  touch-action: none;
 }

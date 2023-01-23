@@ -10,5 +10,7 @@ export const useStore = defineStore('store',  {
     canvas: null,
     context: null,
     bounding: null,
+
+    isSettingsModalOpen: false
   })
 })

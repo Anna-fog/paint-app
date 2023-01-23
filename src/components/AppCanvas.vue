@@ -17,47 +17,43 @@ const updateCoordinates = (x, y) => {
 
 const startDrawing = () => {
   store.isDrawing = true
-
   store.context.beginPath()
   store.context.moveTo(store.mouseX, store.mouseY)
 }
 
 const continueDrawing = () => {
   if (store.isDrawing) {
-    store.context.lineCap = 'round'
-    store.context.lineJoin = 'round'
     store.context.lineTo(store.mouseX, store.mouseY)
     store.context.stroke()
   }
 }
 
-const handleMouseDown = (e) => {
-  updateCoordinates(e.clientX, e.clientY)
+const handleStart = (e) => {
+  if (e.type === 'mousedown') {
+    updateCoordinates(e.clientX, e.clientY)
+  } else if (e.type === 'touchstart') {
+    updateCoordinates(e.changedTouches[0].clientX, e.changedTouches[0].clientY)
+  }
+
   startDrawing()
 }
 
-const handleMouseMove = (e) => {
-  updateCoordinates(e.clientX, e.clientY)
+const handleMove = (e) => {
+  if (e.type === 'mousemove') {
+    updateCoordinates(e.clientX, e.clientY)
+  } else if (e.type === 'touchmove') {
+    updateCoordinates(e.changedTouches[0].clientX, e.changedTouches[0].clientY)
+  }
+
   continueDrawing()
 }
 
-const handleMouseUp = (e) => {
-  updateCoordinates(e.clientX, e.clientY)
-  store.isDrawing = false
-}
-
-const handleTouchStart = (e) => {
-  updateCoordinates(e.changedTouches[0].clientX, e.changedTouches[0].clientY)
-  startDrawing()
-}
-
-const handleTouchMove = (e) => {
-  updateCoordinates(e.changedTouches[0].clientX, e.changedTouches[0].clientY)
-  continueDrawing()
-}
-
-const handleTouchEnd = (e) => {
-  updateCoordinates(e.changedTouches[0].clientX, e.changedTouches[0].clientY)
+const handleEnd = (e) => {
+  if (e.type === 'handleEnd') {
+    updateCoordinates(e.clientX, e.clientY)
+  } else if (e.type === 'touchend') {
+    updateCoordinates(e.changedTouches[0].clientX, e.changedTouches[0].clientY)
+  }
   store.isDrawing = false
 }
 
@@ -66,27 +62,24 @@ const handleTouchEnd = (e) => {
 <template>
   <canvas
     class="canvas"
-    @mousedown="handleMouseDown"
-    @mousemove="handleMouseMove"
-    @mouseup="handleMouseUp"
-    @touchstart="handleTouchStart"
-    @touchmove="handleTouchMove"
-    @touchend="handleTouchEnd"
+    @mousedown="handleStart"
+    @mousemove="handleMove"
+    @mouseup="handleEnd"
+    @touchstart="handleStart"
+    @touchmove="handleMove"
+    @touchend="handleEnd"
     id="paint-canvas"
-    width="900"
-    height="550"
+
   ></canvas>
 </template>
 
 <style lang="scss" scoped>
 .canvas {
-  border: 1px solid gray;
+  width: 100%;
+  margin: 10px auto 0 auto;
+  outline: 2px solid #cfcfcf;
+  border-radius: 8px;
   cursor: crosshair;
   touch-action: manipulation;
-
-  @media (max-width: 1180px) {
-    max-width: calc(100vw - 20px);
-    max-height: calc(100vh - 200px);
-  }
 }
 </style>

@@ -33,23 +33,11 @@ const toggleActiveClass = (brush) => {
 
 <style lang="scss" scoped>
 .brushes {
-  margin-top: 20px;
-
-  @media (max-width: 1180px) {
-    margin-right: 10px;
-  }
-
   &__type {
     height: 30px;
     margin-bottom: 10px;
     width: 100%;
     transition: .3s all;
-
-    @media (max-width: 1180px) {
-      max-width: 250px;
-      margin-bottom: 0;
-      margin-top: 6px;
-    }
 
     &:hover {
       background-color: transparent;
@@ -64,6 +52,10 @@ const toggleActiveClass = (brush) => {
         content: '';
       }
     }
+  }
+
+  @media (max-width: 560px) {
+    width: 100%;
   }
 }
 </style>

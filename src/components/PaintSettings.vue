@@ -10,15 +10,17 @@ const store = useStore()
 const clearCanvas = () => {
   store.context.clearRect(0, 0, store.canvas.width, store.canvas.height)
   store.canvas.style.backgroundColor = colors[colors.length - 2]
+
+  closeSettings()
 }
 
 const saveDrawing = () => {
-  const chosenFormat = confirm('Press "OK" for PNG format or "Cancel" for JPG')
+  const chosenFormat = confirm('Press "OK" for JPG format or "Cancel" for PNG')
   const imageNamePrompt = prompt('Please enter image name')
   let canvasDataURL
   let format
 
-  if (chosenFormat) {
+  if (!chosenFormat) {
     canvasDataURL = store.canvas.toDataURL("image/png")
     format = 'png'
   } else {
@@ -41,43 +43,105 @@ const saveDrawing = () => {
   link.href = canvasDataURL
   link.download = imageNamePrompt ? `${imageNamePrompt}.${format}` :  `drawing.${format}`
   link.click()
+
+  closeSettings()
 }
+
+const closeSettings = () => {
+  store.isSettingsModalOpen = false
+}
+
 </script>
 
 <template>
-  <div class="settings">
-    <Palette />
-    <BrushesTypes />
+  <div v-if="store.isSettingsModalOpen" class="settings">
     <div class="settings__buttons">
+      <div class="settings__close" @click="closeSettings">
+        <img src="../assets/close.svg" alt="close settings">
+      </div>
       <button class="btn btn-outline-secondary" @click="clearCanvas">Clear</button>
       <button class="btn btn-outline-primary" @click="saveDrawing">Save</button>
     </div>
+
+    <Palette />
+    <BrushesTypes />
   </div>
 </template>
 
 <style lang="scss" scoped>
 .settings {
   display: flex;
-  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 20px;
+  position: absolute;
+  right: 30px;
+  bottom: 20px;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 .125rem .25rem rgba(black, .4);
+  background-color: #ffffff;
+  z-index: 1;
 
-  @media (max-width: 1180px) {
-    flex-direction: row;
+  @media (max-width: 560px) {
+    flex-direction: column;
     align-items: flex-end;
-    gap: 5px;
+    bottom: inherit;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60vw;
+
+    .btn-outline-primary {
+      &:hover {
+        background-color: transparent;
+        color: rgb(13, 110, 253);
+      }
+    }
+
+    .btn-outline-secondary {
+      &:hover {
+        background-color: transparent;
+        color: rgb(108, 117, 125);
+      }
+    }
+  }
+
+  @media (max-width: 360px) {
+    width: calc(100% - 80px);
   }
 
   &__buttons {
     display: flex;
     justify-content: center;
-    align-items: flex-end;
+    align-items: center;
+    flex-direction: column;
     gap: 10px;
 
-    @media (max-width: 1180px) {
-      flex-direction: column;
+    @media (max-width: 560px) {
+      flex-direction: row;
+      width: 100%;
     }
 
     button {
       width: 100%;
+    }
+  }
+
+  &__close {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    border: 1px gray solid;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+
+    img {
+      width: 15px;
+      height: 15px;
     }
   }
 }
