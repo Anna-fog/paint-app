@@ -14,6 +14,10 @@ const stopDrawing = () => {
   store.isDrawing = false
 }
 
+const closeSettings = () => {
+  store.isSettingsModalOpen = false
+}
+
 onMounted(() => {
   store.canvas = document.getElementById("paint-canvas");
   store.context = store.canvas.getContext("2d");
@@ -36,14 +40,24 @@ onMounted(() => {
     store.canvas.width = wrapperBounding.width - 20
     store.canvas.height = window.innerHeight  * 0.70
   }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.code === 'Escape' && store.isSettingsModalOpen) {
+      closeSettings()
+    }
+  })
 })
 </script>
 
 <template>
-  <div @mouseup="stopDrawing" @touchend="stopDrawing" style="height: 100%">
+  <div
+    @mouseup="stopDrawing"
+    @touchend="stopDrawing"
+    @click.self="closeSettings"
+    style="height: 100%">
     <div class="paint-wrapper">
       <AppCanvas/>
-      <PaintSettings />
+      <PaintSettings/>
       <img src="./assets/brush.png" alt="settings" class="settings-btn" @click="toggleSettings">
     </div>
   </div>

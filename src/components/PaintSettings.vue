@@ -2,6 +2,7 @@
 import Palette from './Palette.vue'
 import BrushesTypes from './BrushesTypes.vue'
 import { colors } from "../../data/colors.js";
+import DetailsModal from './modals/DetailsModal.vue'
 
 import { useStore } from "../store/store.js";
 
@@ -14,15 +15,11 @@ const clearCanvas = () => {
   closeSettings()
 }
 
-const saveDrawing = () => {
-  const chosenFormat = confirm('Press "OK" for JPG format or "Cancel" for PNG')
-  const imageNamePrompt = prompt('Please enter image name')
+const saveDrawing = (format, name) => {
   let canvasDataURL
-  let format
 
-  if (!chosenFormat) {
+  if (format === 'png') {
     canvasDataURL = store.canvas.toDataURL("image/png")
-    format = 'png'
   } else {
     const newCanvas = document.createElement("canvas");
     newCanvas.width = store.canvas.width;
@@ -30,18 +27,17 @@ const saveDrawing = () => {
 
     const newContext = newCanvas.getContext('2d');
 
-    newContext.fillStyle = store.canvas.style.backgroundColor
+    newContext.fillStyle = store.canvas.style.backgroundColor || 'white'
     newContext.fillRect(0,0, store.canvas.width, store.canvas.height);
     newContext.drawImage(store.canvas, 0, 0);
 
     canvasDataURL = newCanvas.toDataURL("image/jpg");
-    format = 'jpg'
   }
 
   const link = document.createElement('a')
 
   link.href = canvasDataURL
-  link.download = imageNamePrompt ? `${imageNamePrompt}.${format}` :  `drawing.${format}`
+  link.download = name ? `${name}.${format}` :  `drawing.${format}`
   link.click()
 
   closeSettings()
@@ -54,18 +50,25 @@ const closeSettings = () => {
 </script>
 
 <template>
-  <div v-if="store.isSettingsModalOpen" class="settings">
-    <div class="settings__buttons">
-      <div class="settings__close" @click="closeSettings">
-        <img src="../assets/close.svg" alt="close settings">
+  <Transition>
+    <div v-show="store.isSettingsModalOpen" class="settings">
+      <div class="settings__buttons">
+        <div class="settings__close" @click="closeSettings">
+          <img src="../assets/close.svg" alt="close settings">
+        </div>
+        <button class="btn btn-outline-secondary" @click="clearCanvas">
+          Clear
+        </button>
+        <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#detailsModal">
+          Save
+        </button>
       </div>
-      <button class="btn btn-outline-secondary" @click="clearCanvas">Clear</button>
-      <button class="btn btn-outline-primary" @click="saveDrawing">Save</button>
+      <Palette />
+      <BrushesTypes />
     </div>
+  </Transition>
 
-    <Palette />
-    <BrushesTypes />
-  </div>
+  <DetailsModal @save="saveDrawing" />
 </template>
 
 <style lang="scss" scoped>
@@ -144,5 +147,13 @@ const closeSettings = () => {
       height: 15px;
     }
   }
+}
+
+.v-enter-active, .v-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.v-enter-from, .v-leave-to {
+  opacity: 0;
 }
 </style>
