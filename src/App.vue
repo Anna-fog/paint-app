@@ -10,6 +10,10 @@ const toggleSettings = () => {
   store.isSettingsModalOpen = !store.isSettingsModalOpen
 }
 
+const stopDrawing = () => {
+  store.isDrawing = false
+}
+
 onMounted(() => {
   store.canvas = document.getElementById("paint-canvas");
   store.context = store.canvas.getContext("2d");
@@ -36,10 +40,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="paint-wrapper">
-    <AppCanvas/>
-    <PaintSettings />
-    <img src="./assets/brush.png" alt="settings" class="settings-btn" @click="toggleSettings">
+  <div @mouseup="stopDrawing" @touchend="stopDrawing" style="height: 100%">
+    <div class="paint-wrapper">
+      <AppCanvas/>
+      <PaintSettings />
+      <img src="./assets/brush.png" alt="settings" class="settings-btn" @click="toggleSettings">
+    </div>
   </div>
 </template>
 
